@@ -68,18 +68,22 @@ public class playermove : MonoBehaviour
         UpdateScoreUI();
     }
 
-    void Update()
+void Update()
     {
         if (isDead) return;
 
-        // Gunakan unscaledDeltaTime/InputSystem agar tetap membaca klik meski Time.timeScale = 0
-        if (Mouse.current.leftButton.wasPressedThisFrame)
+        // Cek input dari Mouse (Klik Kiri), Touchscreen (Sentuhan Layar HP), atau Keyboard (Tombol Spasi)
+        bool isJumpPressed = (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame) ||
+                            (Touchscreen.current != null && Touchscreen.current.primaryTouch.press.wasPressedThisFrame) ||
+                            (Keyboard.current != null && Keyboard.current.spaceKey.wasPressedThisFrame);
+
+        if (isJumpPressed)
         {
-            // Klik pertama: Mulai game dan pipa mulai jalan
+            // Klik/Sentuhan pertama: Mulai game dan jalankan timeScale
             if (!isGameStarted)
             {
                 isGameStarted = true;
-                Time.timeScale = 1f; // Jalankan kembali seluruh pergerakan game (pipa, timer, dll)
+                Time.timeScale = 1f; // Jalankan kembali seluruh pergerakan game
             }
 
             // Eksekusi lompatan
